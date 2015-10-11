@@ -1,0 +1,26 @@
+{
+    "appKeys": {
+        "LONGITUDE": 1,
+        "TIME_ZONE": 2
+    },
+    "capabilities": [
+        "location"
+    ],
+    "companyName": "ctr_287@sbcglobal.net",
+    "longName": "Sidereal",
+    "projectType": "native",
+    "resources": {
+        "media": []
+    },
+    "sdkVersion": "3",
+    "shortName": "Sidereal",
+    "targetPlatforms": [
+        "aplite",
+        "basalt"
+    ],
+    "uuid": "0b079c53-93fd-4eb1-93d1-e638b17f7308",
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": true
+    }
+}
