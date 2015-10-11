@@ -4,8 +4,8 @@ static Window *s_main_window;
 static TextLayer *s_time_layer;
 static TextLayer *s_battery_layer;
 static TextLayer *s_connection_layer;
-static double longitude = 0;//-22856.471;
-static double timezone = 0;//18000;
+static double longitude = -22856.471;
+static double timezone = 18000;
 
 static void handle_battery(BatteryChargeState charge_state) {
   static char battery_text[] = "100% charged";
@@ -50,7 +50,7 @@ static void handle_second_tick(struct tm* tick_time, TimeUnits units_changed) {
   
   double sidereal_factor = 1.0027379093507949;
   double sidereal_offset = 67310.54840880001;
-  longitude = -22856.471;
+  //longitude = -22856.471;
   //        This number is the conversion from unix epoch to reduced julian date epoch  v
   int siderealTime = (int)(sidereal_offset + sidereal_factor * ((double)(unixtime) - 946728000) + longitude);
   //static char debug_text[] = "0000000000";
@@ -126,13 +126,13 @@ static void init() {
     .unload = main_window_unload,
   });
   window_stack_push(s_main_window, true);
-  app_message_register_inbox_received(recieve_location_info);
-  app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
+  //app_message_register_inbox_received(recieve_location_info);
+  //app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
 }
 
 static void deinit() {
   window_destroy(s_main_window);
-  app_message_deregister_callbacks();
+  //app_message_deregister_callbacks();
 }
 
 int main(void) {

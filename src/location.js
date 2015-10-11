@@ -1,4 +1,4 @@
-var locationOptions = {
+/*var locationOptions = {
   enableHighAccuracy: true, 
   maximumAge: 10000, 
   timeout: 10000
@@ -32,7 +32,7 @@ function locationError(err) {
 Pebble.addEventListener('ready',
   function(e) {
     // Request current position
-    navigator.geolocation.getCurrentPosition(locationSuccess, locationError, locationOptions);
+    //navigator.geolocation.getCurrentPosition(locationSuccess, locationError, locationOptions);
   }
 );
-
+*/
