@@ -1,4 +1,4 @@
-/*var locationOptions = {
+var locationOptions = {
   enableHighAccuracy: true, 
   maximumAge: 10000, 
   timeout: 10000
@@ -8,7 +8,7 @@ function locationSuccess(pos) {
   var d = new Date();
   var tz = d.getTimezoneOffset()*60;
   console.log('lat= ' + pos.coords.latitude + ' lon= ' + pos.coords.longitude + ' tz= '+tz);
-  var thing = { '1': Math.round(pos.coords.longitude * (12/180) *60*60*100) , '2': tz };
+  var thing = { LONGITUDE: Math.round(pos.coords.longitude * (12/180) *60*60*100) , TIME_ZONE: tz };
   Pebble.sendAppMessage( thing,
     function(e) {
       console.log("SUCCEED!");
@@ -32,7 +32,6 @@ function locationError(err) {
 Pebble.addEventListener('ready',
   function(e) {
     // Request current position
-    //navigator.geolocation.getCurrentPosition(locationSuccess, locationError, locationOptions);
+    navigator.geolocation.getCurrentPosition(locationSuccess, locationError, locationOptions);
   }
 );
-*/

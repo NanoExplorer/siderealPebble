@@ -5,7 +5,9 @@ static TextLayer *s_time_layer;
 static TextLayer *s_battery_layer;
 static TextLayer *s_connection_layer;
 static double longitude = -22856.471;
-static double timezone = 18000;
+static int timezone = 18000;
+static const uint32_t LONGITUDE = 1;
+static const uint32_t TIME_ZONE = 2;
 
 static void handle_battery(BatteryChargeState charge_state) {
   static char battery_text[] = "100% charged";
@@ -19,8 +21,8 @@ static void handle_battery(BatteryChargeState charge_state) {
 }
 
 static void recieve_location_info(DictionaryIterator *iterator, void *context){
-  Tuple *dataln = dict_find(iterator, 1);
-  Tuple *datatz = dict_find(iterator, 2);
+  Tuple *dataln = dict_find(iterator, LONGITUDE);
+  Tuple *datatz = dict_find(iterator, TIME_ZONE);
   
   if(datatz) {
     timezone = ((int) datatz -> value -> int32);
@@ -35,6 +37,8 @@ static void recieve_location_info(DictionaryIterator *iterator, void *context){
   }
   if(datatz && dataln){
     text_layer_set_text(s_connection_layer, "up-to-date");
+    persist_write_int(LONGITUDE, (int)(longitude*100));
+    persist_write_int(TIME_ZONE, timezone);
   } else {
     text_layer_set_text(s_connection_layer, "sync failed");
   }
@@ -119,6 +123,12 @@ static void main_window_unload(Window *window) {
 }
 
 static void init() {
+  if(persist_exists(LONGITUDE)){
+    longitude = ((double)(persist_read_int(LONGITUDE))) / 100;
+  }
+  if(persist_exists(TIME_ZONE)){
+    timezone = persist_read_int(TIME_ZONE);
+  }
   s_main_window = window_create();
   window_set_background_color(s_main_window, GColorBlack);
   window_set_window_handlers(s_main_window, (WindowHandlers) {
@@ -126,13 +136,13 @@ static void init() {
     .unload = main_window_unload,
   });
   window_stack_push(s_main_window, true);
-  //app_message_register_inbox_received(recieve_location_info);
-  //app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
+  app_message_register_inbox_received(recieve_location_info);
+  app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
 }
 
 static void deinit() {
   window_destroy(s_main_window);
-  //app_message_deregister_callbacks();
+  app_message_deregister_callbacks();
 }
 
 int main(void) {
