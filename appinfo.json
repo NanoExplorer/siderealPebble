@@ -6,7 +6,7 @@
         "location"
     ],
     "companyName": "RooneyWorks",
-    "enableMultiJS": false,
+    "enableMultiJS": true,
     "longName": "Local Sidereal Time Watchface",
     "projectType": "native",
     "resources": {
@@ -26,7 +26,7 @@
         "basalt"
     ],
     "uuid": "0b079c53-93fd-4eb1-93d1-e638b17f7308",
-    "versionLabel": "1.1",
+    "versionLabel": "1.2",
     "watchapp": {
         "watchface": true
     }
