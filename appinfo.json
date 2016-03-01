@@ -1,24 +1,32 @@
 {
     "appKeys": {
-        "LONGITUDE": 1,
-        "TIME_ZONE": 2
+        "LONGITUDE": 1
     },
     "capabilities": [
         "location"
     ],
-    "companyName": "ctr_287@sbcglobal.net",
-    "longName": "Sidereal",
+    "companyName": "RooneyWorks",
+    "enableMultiJS": false,
+    "longName": "Local Sidereal Time Watchface",
     "projectType": "native",
     "resources": {
-        "media": []
+        "media": [
+            {
+                "file": "images/siderealicon.png",
+                "menuIcon": true,
+                "name": "MAIN_ICON",
+                "type": "bitmap"
+            }
+        ]
     },
     "sdkVersion": "3",
     "shortName": "Sidereal",
     "targetPlatforms": [
-        "aplite"
+        "aplite",
+        "basalt"
     ],
     "uuid": "0b079c53-93fd-4eb1-93d1-e638b17f7308",
-    "versionLabel": "1.0",
+    "versionLabel": "1.1",
     "watchapp": {
         "watchface": true
     }

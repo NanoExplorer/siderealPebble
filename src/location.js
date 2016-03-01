@@ -5,10 +5,16 @@ var locationOptions = {
 };
 
 function locationSuccess(pos) {
-  var d = new Date();
-  var tz = d.getTimezoneOffset()*60;
-  console.log('lat= ' + pos.coords.latitude + ' lon= ' + pos.coords.longitude + ' tz= '+tz);
-  var thing = { LONGITUDE: Math.round(pos.coords.longitude * (12/180) *60*60*100) , TIME_ZONE: tz };
+  var SDK = "aplite";
+  console.log('lat= ' + pos.coords.latitude + ' lon= ' + pos.coords.longitude );
+  if(Pebble.getActiveWatchInfo) {
+    // Available for use!
+    var watch = Pebble.getActiveWatchInfo();
+    SDK = watch.platform;
+  } 
+  var thing;
+  thing = { LONGITUDE: Math.round(pos.coords.longitude * (12/180) *60*60*100)  };
+
   Pebble.sendAppMessage( thing,
     function(e) {
       console.log("SUCCEED!");

@@ -5,9 +5,7 @@ static TextLayer *s_time_layer;
 static TextLayer *s_battery_layer;
 static TextLayer *s_connection_layer;
 static double longitude = -22856.471;
-static int timezone = 18000;
 static const uint32_t LONGITUDE = 1;
-static const uint32_t TIME_ZONE = 2;
 
 static void handle_battery(BatteryChargeState charge_state) {
   static char battery_text[] = "100% charged";
@@ -22,23 +20,16 @@ static void handle_battery(BatteryChargeState charge_state) {
 
 static void recieve_location_info(DictionaryIterator *iterator, void *context){
   Tuple *dataln = dict_find(iterator, LONGITUDE);
-  Tuple *datatz = dict_find(iterator, TIME_ZONE);
   
-  if(datatz) {
-    timezone = ((int) datatz -> value -> int32);
-  } else {
-    APP_LOG(APP_LOG_LEVEL_WARNING, "App message does not contain timezone");
-  }
   
   if(dataln) {
     longitude = ((float)((int) dataln -> value -> int32))/100;
   } else {
     APP_LOG(APP_LOG_LEVEL_WARNING, "App message does not contain longitude");
   }
-  if(datatz && dataln){
+  if(dataln){
     text_layer_set_text(s_connection_layer, "up-to-date");
     persist_write_int(LONGITUDE, (int)(longitude*100));
-    persist_write_int(TIME_ZONE, timezone);
   } else {
     text_layer_set_text(s_connection_layer, "sync failed");
   }
@@ -49,8 +40,9 @@ static void recieve_location_info(DictionaryIterator *iterator, void *context){
 static void handle_second_tick(struct tm* tick_time, TimeUnits units_changed) {
   // Needs to be static because it's used by the system later.
   static char s_time_text[] = "00:00:00";
-  
-  time_t unixtime = mktime(tick_time) + timezone;
+  static char s_minute[] = ":00";
+  static char s_sec[] = ":00";
+  time_t unixtime = mktime(tick_time);
   
   double sidereal_factor = 1.0027379093507949;
   double sidereal_offset = 67310.54840880001;
@@ -64,7 +56,20 @@ static void handle_second_tick(struct tm* tick_time, TimeUnits units_changed) {
   int siderealMin = ( siderealTime % 3600 ) / 60;
   int siderealSec = (siderealTime % 60);
   //strftime(s_time_text, sizeof(s_time_text), "%T", tick_time);
-  snprintf(s_time_text,sizeof(s_time_text),"%d:%d:%d",siderealHr,siderealMin,siderealSec);
+  if (siderealMin < 10) {
+    snprintf(s_minute,sizeof(s_minute),":0%d",siderealMin);
+  } else {
+    snprintf(s_minute,sizeof(s_minute),":%d",siderealMin);
+  } 
+  
+  if (siderealSec < 10) {
+    snprintf(s_sec,sizeof(s_sec),":0%d",siderealSec);
+  } else {
+    snprintf(s_sec,sizeof(s_sec),":%d",siderealSec);
+  }
+  snprintf(s_time_text,sizeof(s_time_text),"%d",siderealHr);
+  strcat(s_time_text,s_minute);
+  strcat(s_time_text,s_sec);
   text_layer_set_text(s_time_layer, s_time_text);
 
   handle_battery(battery_state_service_peek());
@@ -125,9 +130,6 @@ static void main_window_unload(Window *window) {
 static void init() {
   if(persist_exists(LONGITUDE)){
     longitude = ((double)(persist_read_int(LONGITUDE))) / 100;
-  }
-  if(persist_exists(TIME_ZONE)){
-    timezone = persist_read_int(TIME_ZONE);
   }
   s_main_window = window_create();
   window_set_background_color(s_main_window, GColorBlack);
